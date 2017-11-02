@@ -51,4 +51,3 @@ for index, block in enumerate(messages): #go through the blocks backwards to dec
 fw = open(args.output_file,'w')
 fw.write(message)
 fw.close()
-print(message)

@@ -11,7 +11,7 @@ from Crypto.Cipher import AES
 
 def parse_file(arg_file):
     with open(arg_file) as f:
-        content = f.readline()
+        content = f.readlines()
 
     return content
 
@@ -31,7 +31,7 @@ class CTR(object):
         if iv is None:
             iv = self.generate_iv()
 
-        if len(str(iv)) > 16:
+        if len(str(iv)) > 32:
             iv = self.strip_iv(iv)
 
         self.iv = iv
@@ -41,7 +41,7 @@ class CTR(object):
         return random.randint(1, sys.maxsize)
 
     def strip_iv(self, value):
-        return int(str(value)[:16])
+        return int(str(value)[:32])
 
     def encrypt(self, key, message):
         cipher_blocks = []
@@ -76,8 +76,8 @@ class CTR(object):
         cipher = AES.AESCipher(new_key, AES.MODE_ECB)
         new_iv = self.iv + count
 
-        if len(str(new_iv)) < 16:
-            str_new_iv = '{0:0>16}'.format(str(new_iv))
+        if len(str(new_iv)) < 32:
+            str_new_iv = '{0:0>32}'.format(str(new_iv))
         else:
             str_new_iv = str(new_iv)
 
@@ -118,13 +118,15 @@ if __name__ == "__main__":
 
     if args.iv_file:
         iv_hex = parse_file(args.iv_file)
-        iv = int(iv_hex.strip(), 16)
+        iv = int(iv_hex[0].strip(), 16)
     else:
         iv = None
     
     key_hex = parse_file(args.key_file)
-    key = key_hex.strip().decode("hex")
-    message = list(parse_file(args.input_file))
+    key = key_hex[0].strip().decode("hex")
+    message = []
+    for line in parse_file(args.input_file):
+        message.extend(list(line))
     output = args.output_file
 
     ctr = CTR(output, iv=iv) 

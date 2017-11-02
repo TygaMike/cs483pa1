@@ -21,7 +21,9 @@ if(args.iv_file):
     iv_hex = parse_file(args.iv_file)
     iv = int(iv_hex.strip(),16)
 else:
-    iv_hex = random.randint(1,sys.maxsize)
+    iv_hex = random.getrandbits(128)
+    iv_hex = str(iv_hex)
+    iv_hex = iv_hex[:32]
 key_hex = parse_file(args.key_file)
 key = key_hex.strip().decode("hex")
 message = list(parse_file(args.input_file))
