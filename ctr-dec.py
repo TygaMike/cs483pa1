@@ -46,7 +46,8 @@ class CTR(object):
     def encrypt(self, key, message):
         cipher_blocks = []
         message_blocks = self.split_message_into_blocks(message)
-
+        self.iv = int("".join(message_blocks[0]))
+        del message_blocks[0]
         pool = multiprocessing.Pool(processes=4)
         results = pool.map(partial(self.encrypt_block, key), enumerate(message_blocks))
         pool.close()

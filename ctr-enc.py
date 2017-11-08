@@ -52,6 +52,13 @@ class CTR(object):
         pool.close()
         pool.join()
 
+        if len(str(self.iv)) < 32:
+            str_new_iv = '{0:0>32}'.format(str(self.iv))
+        else:
+            str_new_iv = str(self.iv)
+
+        cipher_blocks.append(str_new_iv)
+
         for index, block in enumerate(message_blocks):
             str_block = ''.join(block)
             binary_result = results[index].decode("hex")
